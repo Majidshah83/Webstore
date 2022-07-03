@@ -32,7 +32,7 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
   </head>
   <body>
-    <div class="page-holder">
+
       <!-- navbar-->
       <header class="header bg-white">
         <div class="container px-0 px-lg-3">
@@ -101,78 +101,21 @@
           </div>
         </div>
       </div>
-      <div class="container">
+
         <!-- HERO SECTION-->
-       <table  class="table table-hover table-condensed">
-    <thead>
-        @if(session('cart'))
-        <tr>
-            <th style="width:50%">Product</th>
-            <th style="width:10%">Price</th>
-            <th style="width:8%">Quantity</th>
-            <th style="width:22%" class="text-center">Subtotal</th>
-            <th style="width:10%"></th>
-        </tr>
-        @endif
-    </thead>
-    <tbody>
-        @php $total = 0 @endphp
-        @if(session('cart'))
-            @foreach(session('cart') as $id => $details)
-                @php $total += $details['price'] * $details['quantity'] @endphp
-                <tr data-id="{{ $id }}">
-                    <td data-th="Product">
-                        <div class="row">
-                            <div class="col-sm-3 hidden-xs"><img src="{{asset('public/uploads/products_image/'.$details['image'])}}" width="100" height="100" class="img-responsive"/></div>
-                            <div class="col-sm-9">
-                                <h4 class="nomargin">{{ $details['name'] }}</h4>
-                            </div>
-                        </div>
-                    </td>
-                    <td data-th="Price">₨. /{{ $details['price'] }}</td>
-                    <td data-th="Quantity">
-                        <input type="number" value="{{ $details['quantity'] }}" class="form-control quantity update-cart" />
-                    </td>
-                    <td data-th="Subtotal" class="text-center">₨. /{{ $details['price'] * $details['quantity'] }}</td>
-                    <td class="actions" data-th="">
-                        <button class="btn-white remove-from-cart"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                    </td>
-                </tr>
-            @endforeach
-
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="5" class="text-right"><h3><strong>Total₨. /{{ $total }}</strong></h3></td>
-        </tr>
-        <tr>
-            <td colspan="5" class="text-right">
-                <a href="{{url('/')}}" class="btn btn-warning"> Continue Shopping</a>
-                <a href="{{ route('showCheckout') }}" class="btn btn-success">Checkout</a>
-
-            </td>
-        </tr>
-    </tfoot>
-    @else
-
-     <div class="container" style="margin-top: 25px;width: 40%;">
-    <div class="container-fluid">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <center>
-                    <h4 class="text-danger text-uppercase">Your shopping cart is empty</h4>
-
-                </center>
-            </div>
-             <a href="{{url('/')}}" class="btn btn-warning" style=" margin-top: 6%;margin-left: 27%; margin-bottom: 5%;"> Continue Shopping</a>
-        </div>
+   <section class="py-4"style=" margin-bottom: 8%; margin-left: 20%;margin-top: 7%;color: #5bff47;">
+          <!-- BILLING ADDRESS-->
+            @if(session()->has('message'))
+    <div>
+        <h1 style=" margin-left: 17%;color: red;">{{ session()->get('message') }}</h1>
     </div>
-</div>
 @endif
+ <a href="{{url('/')}}" class="btn btn-warning" style=" margin-top: 6%;margin-left: 27%; margin-bottom: 5%;"> Continue Shopping</a>
+        </section>
 
-</table>
+      </div>
 
-
+</div>
 
       </div>
       <footer class="bg-dark text-white">
@@ -263,123 +206,5 @@
     </div>
   </body>
 </html>
-<style>
-    .thumbnail {
-    position: relative;
-    padding: 0px;
-    margin-bottom: 20px;
-}
-.thumbnail img {
-    width: 80%;
-}
-.thumbnail .caption{
-    margin: 7px;
-}
-.main-section{
-    background-color: #F8F8F8;
-}
-.dropdown{
-    float:right;
-    padding-right: 30px;
-}
-.btn{
-    border:0px;
-    margin:10px 0px;
-    box-shadow:none !important;
-}
-.dropdown .dropdown-menu{
-    padding:20px;
-    top:30px !important;
-    width:350px !important;
-    left:-110px !important;
-    box-shadow:0px 5px 30px black;
-}
-.total-header-section{
-    border-bottom:1px solid #d2d2d2;
-}
-.total-section p{
-    margin-bottom:20px;
-}
-.cart-detail{
-    padding:15px 0px;
-}
-.cart-detail-img img{
-    width:100%;
-    height:100%;
-    padding-left:15px;
-}
-.cart-detail-product p{
-    margin:0px;
-    color:#000;
-    font-weight:500;
-}
-.cart-detail .price{
-    font-size:12px;
-    margin-right:10px;
-    font-weight:500;
-}
-.cart-detail .count{
-    color:#C2C2DC;
-}
-.checkout{
-    border-top:1px solid #d2d2d2;
-    padding-top: 15px;
-}
-.checkout .btn-primary{
-    border-radius:50px;
-    height:50px;
-}
-.dropdown-menu:before{
-    content: " ";
-    position:absolute;
-    top:-20px;
-    right:50px;
-    border:10px solid transparent;
-    border-bottom-color:#fff;
-}
-</style>
 
 
-<!--Cart update and delete function-->
-<script type="text/javascript">
-
-    $(".update-cart").change(function (e) {
-        e.preventDefault();
-
-        var ele = $(this);
-
-        $.ajax({
-            url: '{{ route('update.cart') }}',
-            method: "patch",
-            data: {
-                _token: '{{ csrf_token() }}',
-                id: ele.parents("tr").attr("data-id"),
-                quantity: ele.parents("tr").find(".quantity").val()
-            },
-            success: function (response) {
-               window.location.reload();
-            }
-        });
-    });
-
-    $(".remove-from-cart").click(function (e) {
-        e.preventDefault();
-
-        var ele = $(this);
-
-        if(confirm("Are you sure want to remove?")) {
-            $.ajax({
-                url: '{{ route('remove.from.cart') }}',
-                method: "DELETE",
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    id: ele.parents("tr").attr("data-id")
-                },
-                success: function (response) {
-                    window.location.reload();
-                }
-            });
-        }
-    });
-
-</script>
